@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { getWeatherInfo } from '../../data/weatherCodes'
+import { countryCities } from '../../data/countryCities'
 import { useAppStore } from '../../store/useAppStore'
 import WeatherSkeleton from './WeatherSkeleton'
+import HourlyForecast from './HourlyForecast'
+import NearbyPlaces from './NearbyPlaces'
+import CountryMapModal from './CountryMapModal'
 
 const KOREA_OFFSET_SECONDS = 9 * 3600
 
@@ -42,16 +46,23 @@ function StatCard({ label, value }) {
   )
 }
 
-export default function WeatherDetailPanel({ place, weather, isLoading, isError, onRetry, onClose }) {
+export default function WeatherDetailPanel({ place, weather, isLoading, isError, onRetry, onClose, landmarksWeather }) {
   const unit = useAppStore((s) => s.unit)
   const [nowMs, setNowMs] = useState(Date.now())
+  const [showCountryMap, setShowCountryMap] = useState(false)
 
   useEffect(() => {
     const timer = setInterval(() => setNowMs(Date.now()), 1000)
     return () => clearInterval(timer)
   }, [])
 
+  useEffect(() => {
+    setShowCountryMap(false)
+  }, [place?.id])
+
   if (!place) return null
+
+  const hasCountryMap = place.countryCode && countryCities[place.countryCode]?.length > 0
 
   const unitLabel = unit === 'f' ? '°F' : '°C'
   const current = weather?.current
@@ -69,12 +80,13 @@ export default function WeatherDetailPanel({ place, weather, isLoading, isError,
   }
 
   return (
+    <>
     <motion.aside
       initial={{ x: 48, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 48, opacity: 0 }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
-      className="pointer-events-auto fixed right-4 top-20 z-20 w-[min(92vw,360px)] rounded-2xl border border-white/10 bg-black/50 p-5 text-white shadow-2xl backdrop-blur-xl"
+      className="pointer-events-auto fixed right-4 top-20 z-20 max-h-[calc(100vh-6rem)] w-[min(92vw,380px)] overflow-y-auto rounded-2xl border border-white/10 bg-black/50 p-5 text-white shadow-2xl backdrop-blur-xl"
     >
       <div className="flex items-start justify-between">
         <div>
@@ -85,6 +97,14 @@ export default function WeatherDetailPanel({ place, weather, isLoading, isError,
           <div className="text-sm text-white/60">
             {place.city?.ko ?? ''} {place.country?.ko ? `· ${place.country.ko}` : ''}
           </div>
+          {hasCountryMap && (
+            <button
+              onClick={() => setShowCountryMap(true)}
+              className="mt-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/80 transition hover:bg-white/20"
+            >
+              🗺️ {place.country?.ko ?? ''} 주요 도시 날씨 보기
+            </button>
+          )}
         </div>
         <button
           onClick={onClose}
@@ -164,8 +184,20 @@ export default function WeatherDetailPanel({ place, weather, isLoading, isError,
               </div>
             </div>
           )}
+
+          <HourlyForecast hourly={weather?.hourly} utcOffsetSeconds={utcOffsetSeconds} />
+          <NearbyPlaces place={place} landmarksWeather={landmarksWeather} />
         </div>
       )}
     </motion.aside>
+
+    {showCountryMap && hasCountryMap && (
+      <CountryMapModal
+        countryCode={place.countryCode}
+        countryName={place.country?.ko ?? ''}
+        onClose={() => setShowCountryMap(false)}
+      />
+    )}
+    </>
   )
 }

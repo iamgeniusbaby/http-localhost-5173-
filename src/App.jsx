@@ -125,6 +125,7 @@ export default function App() {
             isError={currentIsError}
             onRetry={() => (selectedPlace.isLandmark ? batchQuery.refetch() : singleQuery.refetch())}
             onClose={clearSelection}
+            landmarksWeather={batchQuery.data}
           />
         )}
       </AnimatePresence>

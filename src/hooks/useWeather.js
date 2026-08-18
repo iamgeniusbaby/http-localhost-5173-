@@ -39,3 +39,28 @@ export function useSingleLocationWeather(lat, lon, enabled = true) {
     retryDelay,
   })
 }
+
+/** F1 — 선택 지점 근처 관광지/도시 후보들의 날씨를 1회 배치 호출로 조회 */
+export function useNearbyWeather(candidates) {
+  const ids = (candidates ?? []).map((c) => c.id).join(',')
+  return useQuery({
+    queryKey: ['weather', 'nearby', ids],
+    queryFn: () => fetchForecastBatch(candidates),
+    enabled: (candidates?.length ?? 0) > 0,
+    staleTime: TEN_MIN,
+    retry: shouldRetry,
+    retryDelay,
+  })
+}
+
+/** F2 — 국가 맵 모달에 표시할 인구 상위 도시들의 날씨를 배치 조회 */
+export function useCountryCitiesWeather(countryCode, cities) {
+  return useQuery({
+    queryKey: ['weather', 'country-cities', countryCode],
+    queryFn: () => fetchForecastBatch(cities),
+    enabled: !!countryCode && (cities?.length ?? 0) > 0,
+    staleTime: TEN_MIN,
+    retry: shouldRetry,
+    retryDelay,
+  })
+}

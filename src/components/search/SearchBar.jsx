@@ -60,6 +60,7 @@ export default function SearchBar() {
       lat: g.latitude,
       lon: g.longitude,
       timezone: g.timezone,
+      countryCode: g.country_code,
       icon: countryFlag(g.country_code),
       isLandmark: false,
     }
