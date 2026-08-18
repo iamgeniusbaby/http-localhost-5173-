@@ -28,7 +28,10 @@ export default function GlobeScene({ weatherById, activeScene, showStars = true,
         })
       }}
     >
-      <ambientLight intensity={0.9} />
+      {/* 대륙/랜드마크 식별성을 위해 밝게 유지: 실시간 태양 위치와 무관하게
+          지구 전체가 항상 잘 보이도록 ambient + hemisphere 광량을 넉넉히 확보 */}
+      <ambientLight intensity={1.85} />
+      <hemisphereLight args={['#ffffff', '#8899bb', 0.6]} />
       <directionalLight
         position={[sunDir.x, sunDir.y, sunDir.z]}
         intensity={(activeScene?.lightIntensity ?? 1.15) * 2.4}
