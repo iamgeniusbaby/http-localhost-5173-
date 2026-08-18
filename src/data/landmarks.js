@@ -61,6 +61,18 @@ export const landmarks = [
     icon: '🏯',
   },
   {
+    id: 'namsan-tower',
+    name: { ko: '남산타워', en: 'N Seoul Tower' },
+    city: { ko: '서울', en: 'Seoul' },
+    country: { ko: '대한민국', en: 'South Korea' },
+    countryCode: 'KR',
+    continent: 'asia',
+    lat: 37.5512,
+    lon: 126.9882,
+    timezone: 'Asia/Seoul',
+    icon: '🗼',
+  },
+  {
     id: 'great-wall',
     name: { ko: '만리장성', en: 'Great Wall of China' },
     city: { ko: '베이징', en: 'Beijing' },
