@@ -1,0 +1,131 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #000;
+  overscroll-behavior: none;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+canvas {
+  touch-action: none;
+}
+
+/* F4.3 — 비/눈 파티클 */
+.particle-rain {
+  position: absolute;
+  top: -5%;
+  width: 1px;
+  height: 16px;
+  background: linear-gradient(to bottom, transparent, rgba(190, 210, 255, 0.85));
+  animation-name: fall-rain;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fall-rain {
+  from {
+    transform: translateY(-10vh);
+    opacity: 0.9;
+  }
+  to {
+    transform: translateY(110vh);
+    opacity: 0.4;
+  }
+}
+
+.particle-snow {
+  position: absolute;
+  top: -5%;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.9);
+  animation-name: fall-snow;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fall-snow {
+  0% {
+    transform: translateY(-10vh) translateX(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(50vh) translateX(12px);
+  }
+  100% {
+    transform: translateY(110vh) translateX(-8px);
+    opacity: 0.6;
+  }
+}
+
+.particle-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 9999px;
+  background: white;
+  animation-name: twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.storm-flash {
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  animation: flash 7s infinite;
+}
+
+@keyframes flash {
+  0%,
+  92%,
+  100% {
+    opacity: 0;
+  }
+  93% {
+    opacity: 0.5;
+  }
+  94% {
+    opacity: 0;
+  }
+  95% {
+    opacity: 0.3;
+  }
+  96% {
+    opacity: 0;
+  }
+}
+
+/* F4.6 — prefers-reduced-motion 시 파티클·애니메이션 비활성 */
+@media (prefers-reduced-motion: reduce) {
+  .particle-rain,
+  .particle-snow,
+  .particle-star,
+  .storm-flash {
+    animation: none !important;
+    display: none;
+  }
+}
